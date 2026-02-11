@@ -96,8 +96,8 @@ function App() {
               onCreateChannel={handleCreateChannel}
             />
           }
-          main={<ChatInterface />}
-          assistant={<AIAssistantPanel />}
+          main={<AIAssistantPanel />}
+          assistant={<ChatInterface />}
         />
       </Chat>
     </ThemeProvider>

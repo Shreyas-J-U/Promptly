@@ -45,6 +45,14 @@ const WRITING_PROMPTS = [
     icon: "✍️",
     gradient: "from-violet-500/20 to-purple-500/20",
   },
+  {
+    id: 5,
+    category: "Creative",
+    title: "Generate Study Plan",
+    description: "Generate a study plan for a student with the time given",
+    icon: "👨‍💻",
+    gradient: "from-violet-500/20 to-purple-500/20",
+  },
 ];
 
 export default function AIAssistantPanel() {

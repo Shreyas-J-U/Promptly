@@ -50,8 +50,16 @@ const WRITING_PROMPTS = [
     category: "Creative",
     title: "Generate Study Plan",
     description: "Generate a study plan for a student with the time given",
-    icon: "👨‍💻",
-    gradient: "from-violet-500/20 to-purple-500/20",
+    icon: "💻",
+    gradient: "from-green-500/20 to-green-500/20",
+  },
+  {
+    id: 6,
+    category: "Creative",
+    title: "Reasearch on a topic",
+    description: "Get a detailed research on any topic",
+    icon: "🔍",
+    gradient: "from-yellow-500/20 to-purple-500/20",
   },
 ];
 

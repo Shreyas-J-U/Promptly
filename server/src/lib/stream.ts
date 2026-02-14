@@ -7,7 +7,7 @@ const apiKey = process.env.STREAM_API_KEY;
 const apiSecret = process.env.STREAM_API_SECRET;
 
 if (!apiKey || !apiSecret) {
-  // We can warn instead of throwing to allow server to start partially configured
+  // warn the user instead of throwing bunch of erors
   console.warn(
     "Stream API key and secret are missing. Chat features will not work.",
   );

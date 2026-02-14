@@ -16,7 +16,7 @@ export class Agent {
     await streamClient.upsertUser({
       id: "ai-agent",
       name: "AI Assistant",
-      role: "admin", // or user
+      role: "admin", 
       image: "https://cdn-icons-png.flaticon.com/512/4712/4712035.png",
     });
 
@@ -50,6 +50,8 @@ export class Agent {
       User Message: ${messageText}
       
       Respond conversationally and helpfully.
+      Make sure you give it in a very structured and easy to understand format.
+      Follow the basic details to answer the user message in the required format.
     `;
 
     try {

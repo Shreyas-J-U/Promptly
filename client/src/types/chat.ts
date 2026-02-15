@@ -6,6 +6,6 @@ export interface IChatSource {
 export interface IChatMetadata {
   sources: IChatSource[];
   domains: string[];
-  processingTime: string;
+  processingTime: number;
   highlights: string[];
 }

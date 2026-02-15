@@ -7,10 +7,12 @@ import {
   Search,
   ChevronRight,
   Check,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 const WRITING_PROMPTS = [
   {
@@ -77,7 +79,7 @@ export default function AIAssistantPanel({
   const [prompt, setPrompt] = useState(initialData?.prompt || "");
   const [response, setResponse] = useState(initialData?.response || "");
   const [loading, setLoading] = useState(false);
-  const [includeSearch, setIncludeSearch] = useState(false);
+  const [includeSearch, setIncludeSearch] = useState(true);
   const [copied, setCopied] = useState(false);
 
   const handleGenerate = async () => {
@@ -119,87 +121,93 @@ export default function AIAssistantPanel({
   };
 
   return (
-    <div className="flex h-full flex-col overflow-hidden bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="flex h-full flex-col overflow-hidden bg-background">
       {/* Premium Header */}
-      <div className="relative p-5 border-b border-border/50">
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--ai-gradient-start)/0.05)] to-[hsl(var(--ai-gradient-end)/0.05)]" />
-        <div className="relative flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-gradient-to-br from-[hsl(var(--ai-gradient-start))] to-[hsl(var(--ai-gradient-end))] shadow-lg shadow-[hsl(var(--ai-glow)/0.3)]">
-            <Sparkles className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold gradient-text">
-              AI Writing Assistant
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              Powered by Gemini 2.5
-            </p>
+      <div className="relative p-6 border-b border-border/50">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-ai-secondary/5" />
+        <div className="relative flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-ai-secondary shadow-lg shadow-primary/20">
+              <Sparkles className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold gradient-text">Assistant</h2>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
+                Intelligence Engine
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-6">
+      <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
         {/* Quick Prompts */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-            Quick Prompts
-          </h3>
-          <div className="grid gap-3">
-            {WRITING_PROMPTS.map((template, index) => (
-              <div
-                key={template.id}
-                onClick={() => handleUsePrompt(template)}
-                className={cn(
-                  "prompt-card group animate-fade-up",
-                  `bg-gradient-to-r ${template.gradient}`,
-                )}
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl">{template.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-semibold text-sm">
-                        {template.title}
-                      </h4>
-                      <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-background/80 text-muted-foreground font-medium">
-                        {template.category}
-                      </span>
+        {!response && (
+          <div className="space-y-4">
+            <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest px-1">
+              Creative Templates
+            </h3>
+            <div className="grid grid-cols-1 gap-3">
+              {WRITING_PROMPTS.map((template, index) => (
+                <motion.div
+                  key={template.id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={() => handleUsePrompt(template)}
+                  className={cn(
+                    "premium-card group p-4 cursor-pointer relative overflow-hidden",
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "absolute inset-0 opacity-10 bg-gradient-to-br",
+                      template.gradient,
+                    )}
+                  />
+                  <div className="relative flex items-center gap-4">
+                    <span className="text-2xl filter drop-shadow-sm">
+                      {template.icon}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <h4 className="font-bold text-sm tracking-tight">
+                          {template.title}
+                        </h4>
+                        <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-background/50 text-muted-foreground font-bold border border-border/50">
+                          {template.category}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate font-medium">
+                        {template.description}
+                      </p>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                      {template.description}
-                    </p>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-1 transition-all" />
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-foreground group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Prompt Input */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-            Your Prompt
-          </h3>
-          <Textarea
-            placeholder="What would you like me to write? Be specific for better results..."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            autoFocus
-            className="min-h-[120px] resize-none rounded-xl border-border/50 bg-muted/30 input-glow transition-all duration-300 placeholder:text-muted-foreground/50"
-          />
-
-          {/* Controls */}
-          <div className="flex items-center justify-between gap-4">
-            <label className="flex items-center gap-2.5 cursor-pointer group">
+        {/* Prompt Input Area */}
+        <div className="space-y-4 pt-2">
+          <div className="flex items-center justify-between px-1">
+            <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+              Content Strategy
+            </h3>
+            <motion.label
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 cursor-pointer group"
+            >
               <div
                 className={cn(
-                  "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200",
+                  "w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all duration-300",
                   includeSearch
-                    ? "bg-gradient-to-br from-[hsl(var(--ai-gradient-start))] to-[hsl(var(--ai-gradient-end))] border-transparent"
-                    : "border-border group-hover:border-[hsl(var(--ai-primary)/0.5)]",
+                    ? "bg-primary border-primary shadow-lg shadow-primary/20"
+                    : "border-border group-hover:border-primary/50",
                 )}
               >
                 <input
@@ -208,110 +216,141 @@ export default function AIAssistantPanel({
                   onChange={(e) => setIncludeSearch(e.target.checked)}
                   className="sr-only"
                 />
-                {includeSearch && <Check className="h-3 w-3 text-white" />}
+                <AnimatePresence>
+                  {includeSearch && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                    >
+                      <Check className="h-3 w-3 text-white" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
               <div className="flex items-center gap-1.5">
-                <Search className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-                  Include web search
+                <Search className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <span className="text-[11px] font-bold text-muted-foreground group-hover:text-primary transition-colors uppercase tracking-wider">
+                  Deep Discovery
                 </span>
               </div>
-            </label>
-
-            <Button
-              onClick={handleGenerate}
-              disabled={loading || !prompt}
-              className={cn(
-                "btn-primary-glow px-6 rounded-xl font-semibold transition-all duration-300",
-                "bg-gradient-to-r from-[hsl(var(--ai-gradient-start))] to-[hsl(var(--ai-gradient-end))]",
-                "hover:shadow-lg hover:shadow-[hsl(var(--ai-glow)/0.3)] hover:scale-[1.02]",
-                "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
-              )}
-            >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1">
-                    <div className="thinking-dot w-1.5 h-1.5 rounded-full bg-white" />
-                    <div className="thinking-dot w-1.5 h-1.5 rounded-full bg-white" />
-                    <div className="thinking-dot w-1.5 h-1.5 rounded-full bg-white" />
-                  </div>
-                  <span>Generating</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  <span>Generate</span>
-                </div>
-              )}
-            </Button>
+            </motion.label>
           </div>
+
+          <div className="relative group">
+            <Textarea
+              placeholder="Describe what you want to create..."
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              className="min-h-[140px] resize-none rounded-3xl border-border/50 bg-muted/20 p-5 input-glow transition-all duration-300 placeholder:text-muted-foreground/40 font-medium text-sm leading-relaxed"
+            />
+          </div>
+
+          <Button
+            onClick={handleGenerate}
+            disabled={loading || !prompt}
+            className={cn(
+              "w-full py-7 rounded-2xl font-bold transition-all duration-300",
+              "btn-primary-glow text-white shadow-xl shadow-primary/20",
+              "disabled:opacity-50 disabled:shadow-none",
+            )}
+          >
+            {loading ? (
+              <div className="flex items-center gap-3">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span className="tracking-wide">Synthesizing Logic...</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5" />
+                <span className="tracking-wide text-md">Begin Generation</span>
+              </div>
+            )}
+          </Button>
         </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="ai-message ai-glow p-6 animate-scale-in">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(var(--ai-gradient-start))] to-[hsl(var(--ai-gradient-end))] flex items-center justify-center animate-pulse-glow">
-                  <Sparkles className="h-5 w-5 text-white" />
-                </div>
+        {/* Results Area */}
+        <AnimatePresence mode="wait">
+          {(loading || response) && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="space-y-5"
+            >
+              <div className="flex items-center justify-between px-1">
+                <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+                  Assistant Output
+                </h3>
+                {response && !loading && (
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleCopy}
+                      className="rounded-xl h-9 px-4 text-xs font-bold hover:bg-primary/10 hover:text-primary"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="h-3.5 w-3.5 mr-2 text-green-500" />{" "}
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3.5 w-3.5 mr-2" /> Copy Output
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
               </div>
-              <div>
-                <p className="font-medium">AI is thinking...</p>
-                <p className="text-sm text-muted-foreground">
-                  {includeSearch
-                    ? "Searching the web and generating response..."
-                    : "Generating your content..."}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
-        {/* Response */}
-        {response && !loading && (
-          <div className="space-y-3 animate-fade-up">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                Generated Content
-              </h3>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleCopy}
-                  className="rounded-lg text-xs hover:bg-muted/80 transition-all"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="h-3 w-3 mr-1.5 text-green-500" />{" "}
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-3 w-3 mr-1.5" /> Copy
-                    </>
-                  )}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleGenerate}
-                  className="rounded-lg text-xs hover:bg-muted/80 transition-all"
-                >
-                  <RotateCw className="h-3 w-3 mr-1.5" />
-                  Regenerate
-                </Button>
+              <div
+                className={cn(
+                  "ai-message min-h-[100px] transition-all duration-500",
+                  loading && "animate-pulse border-primary/30",
+                )}
+              >
+                {loading ? (
+                  <div className="flex flex-col items-center justify-center py-8 space-y-4">
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-ai-secondary animate-pulse-glow" />
+                      <Sparkles className="absolute inset-0 m-auto h-6 w-6 text-white animate-float" />
+                    </div>
+                    <div className="text-center">
+                      <p className="font-bold text-sm tracking-tight mb-1">
+                        Processing Neural Request
+                      </p>
+                      <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
+                        {includeSearch
+                          ? "Accessing Web Knowledge"
+                          : "Generating Synthetic Context"}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="prose prose-sm dark:prose-invert max-w-none text-foreground/90 font-medium">
+                    <ReactMarkdown>{response}</ReactMarkdown>
+                  </div>
+                )}
               </div>
-            </div>
 
-            <div className="ai-message p-5">
-              <div className="prose prose-sm dark:prose-invert max-w-none">
-                <ReactMarkdown>{response}</ReactMarkdown>
-              </div>
-            </div>
-          </div>
-        )}
+              {response && !loading && (
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setResponse("");
+                    setPrompt("");
+                  }}
+                  className="w-full h-12 rounded-2xl border border-border/50 text-xs font-bold uppercase tracking-widest hover:bg-muted/50 transition-all"
+                >
+                  <RotateCw className="h-3.5 w-3.5 mr-2" />
+                  New Synthesis
+                </Button>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

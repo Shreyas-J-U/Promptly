@@ -47,7 +47,7 @@ const WRITING_PROMPTS = [
   },
   {
     id: 5,
-    category: "Creative",
+    category: "Education",
     title: "Generate Study Plan",
     description: "Generate a study plan for a student with the time given",
     icon: "💻",
@@ -55,7 +55,7 @@ const WRITING_PROMPTS = [
   },
   {
     id: 6,
-    category: "Creative",
+    category: "Research",
     title: "Reasearch on a topic",
     description: "Get a detailed research on any topic",
     icon: "🔍",
@@ -63,7 +63,13 @@ const WRITING_PROMPTS = [
   },
 ];
 
-export default function AIAssistantPanel() {
+import type { IChatMetadata } from "@/types/chat";
+
+export default function AIAssistantPanel({
+  onMetadata,
+}: {
+  onMetadata?: (metadata: IChatMetadata) => void;
+}) {
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
@@ -87,6 +93,9 @@ export default function AIAssistantPanel() {
 
       const data = await res.json();
       setResponse(data.text || "No response generated");
+      if (data.metadata && onMetadata) {
+        onMetadata(data.metadata);
+      }
     } catch (error) {
       console.error(error);
       setResponse("Error generating content. Please try again.");

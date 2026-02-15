@@ -4,42 +4,42 @@
 
 ---
 
-## ✨ Core Capabilities
+## ✨ Core Capabilities & Specialties
 
-### 🤖 Agentic Writing Assistant
+### 🤖 Intelligence Engine
 
-- **Gemini 2.0 Integration**: Leverages Google's state-of-the-art models for creative writing, coding assistance, and complex reasoning.
-- **Real-Time Web Search**: Integrated **Tavily AI** allows the agent to browse the live web, providing up-to-date information and verified sources.
-- **Deep Insights**: Every response comes with a detailed breakdown:
-  - 🔗 **Key Resources**: Direct links to search sources.
-  - 🌐 **Domain Analysis**: Visual map of where information was gathered.
-  - ⏱️ **Processing Metrics**: Real-time generation speed tracking.
-  - ✨ **Key Highlights**: AI-extracted takeaways for quick consumption.
+- **Next-Gen Gemini Integration**: Powered by Google Gemini models for human-like creative writing, robust coding assistance, and advanced reasoning.
+- **Deep Discovery (Search)**: Integrated **Tavily AI** orchestrator for real-time web crawling, providing cited sources and validated truths.
+- **Neural Analysis Feed**: Every response is accompanied by a metadata workspace:
+  - 🔗 **Resource Trace**: Clickable citations for transparent research.
+  - 🌐 **Intelligence Mapping**: Domain breakdown of information origin nodes.
+  - ⏱️ **Latency Metrics**: High-precision generation speed tracking.
+  - 🧠 **Contextual Highlights**: Automated extraction of critical takeaways for rapid consumption.
 
-### 🛡️ Secure & Personal
+### 🎨 State-of-the-Art Interface
 
-- **JWT Authentication**: Industry-standard session management using `jsonwebtoken`.
-- **Bcrypt Security**: All passwords are cryptographically hashed for maximum protection.
-- **Custom History Engine**: A proprietary persistence layer that stores your AI interactions independently of message channels.
-- **Auto-Focus Workflow**: "New Conversation" logic designed for speed—clear state and focus input in one click.
+- **Premium Glassmorphism**: A stunning, translucent UI architecture built with advanced backdrop blurs and subtle satin borders.
+- **Dynamic Fluid Motion**: Powered by **Framer Motion** for smooth, physics-based transitions and micro-animations that make the UI feel "alive".
+- **Responsive Architecture**: A custom-engineered mobile-first layout with intelligent drawer systems and adaptive sidebar logic.
+- **Modern Typography**: Featuring the **Outfit** font family for a sleek, high-end editorial aesthetic.
 
-### 🎨 Premium Design System
+### 🛡️ Secure Workspace
 
-- **Glassmorphism UI**: A visually stunning, translucent interface with backdrop blurs.
-- **AI-Driven Aesthetics**: Dynamic gradients (`#10b981` to `#3b82f6`) and animated micro-interactions.
-- **Dark-First Experience**: Optimized for focus with a refined dark-mode aesthetic.
+- **Custom Persistence Node**: Proprietary history engine that stores interactions securely in a dedicated MongoDB layer.
+- **Identity Protection**: Robust JWT session management paired with salted Bcrypt password rounds.
+- **One-Click Reset**: Instant state hydration and workspace clearing for rapid iteration.
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Layer        | Technologies                                           |
-| :----------- | :----------------------------------------------------- |
-| **Frontend** | React 18, Vite, TypeScript, Tailwind CSS, Lucide Icons |
-| **Backend**  | Node.js, Express, TypeScript, MongoDB (Mongoose)       |
-| **AI Core**  | Google Generative AI (Gemini), Tavily Search SDK       |
-| **Security** | JWT, Bcrypt, Dotenv-Vault                              |
-| **Realtime** | Stream Chat SDK (Session Management)                   |
+| Layer        | Technologies                                                              |
+| :----------- | :------------------------------------------------------------------------ |
+| **Frontend** | React 18, Vite, TypeScript, Tailwind CSS, **Framer Motion**, Lucide Icons |
+| **Backend**  | Node.js, Express, TypeScript, MongoDB (Mongoose)                          |
+| **AI Core**  | Google Generative AI (Gemini), Tavily Search SDK                          |
+| **Security** | JWT, Bcrypt, Dotenv-Vault                                                 |
+| **Realtime** | Stream Chat SDK (Session Management Logic)                                |
 
 ---
 
@@ -117,7 +117,7 @@ npm run dev
 _Building the future of agentic interfaces._
 
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Shreyas-J-U)
-[![Portfolio](https://img.shields.io/badge/Portfolio-2563eb?style=for-the-badge&logo=react&logoColor=white)](https://shreyas-portfolio-ten.vercel.app)
+[![Portfolio](https://img.shields.io/badge/Portfolio-2563eb?style=for-the-badge&logo=react&logoColor=white)](https://github.com/Shreyas-J-U/MyPortfolio)
 
 ---
 

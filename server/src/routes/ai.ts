@@ -12,23 +12,60 @@ router.post("/generate", async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
+  const startTime = Date.now();
   try {
     let finalPrompt = prompt;
+    let sources: { title: string; url: string }[] = [];
+    let domains: string[] = [];
 
     if (includeSearch) {
       console.log("Searching web for:", prompt);
       const searchResults = await searchWeb(prompt);
       // @ts-ignore
-      const context = searchResults.results
-        .map((r: any) => `Source: ${r.url}\nContent: ${r.content}`)
+      sources = (searchResults.results || []).map((r: any) => ({
+        title: r.title || "Untitled",
+        url: r.url,
+      }));
+
+      domains = [...new Set(sources.map((s) => new URL(s.url).hostname))];
+
+      const context = sources
+        // @ts-ignore
+        .map(
+          (s: any, i: number) =>
+            `Source [${i + 1}]: ${s.url}\nContent: ${searchResults.results[i].content}`,
+        )
         .join("\n\n");
-      finalPrompt = `Context from web search:\n${context}\n\nUser Question: ${prompt}\n\nAnswer based on the context provided.`;
+      finalPrompt = `Context from web search:\n${context}\n\nUser Question: ${prompt}\n\nAnswer based on the context provided. If the information isn't in the context, use your general knowledge but prioritize search results.`;
     }
 
     const result = await model.generateContent(finalPrompt);
     const response = await result.response;
     const text = response.text();
-    res.json({ text });
+
+    // Generate Highlights
+    const highlightResult = await model.generateContent(
+      `Based on this AI response, provide 2-3 extremely concise bullet points (max 10 words each) highlighting the key takeaways. Just the bullet points, no extra text:\n\n${text}`,
+    );
+    const highlightResponse = await highlightResult.response;
+    const highlights = highlightResponse
+      .text()
+      .split("\n")
+      .filter((line) => line.trim())
+      .map((line) => line.replace(/^[*-]\s*/, "").trim());
+
+    const endTime = Date.now();
+    const processingTime = ((endTime - startTime) / 1000).toFixed(2);
+
+    res.json({
+      text,
+      metadata: {
+        sources,
+        domains,
+        processingTime,
+        highlights: highlights.slice(0, 3), // Max 3 highlights
+      },
+    });
   } catch (error) {
     console.error("AI Error:", error);
     res.status(500).json({ error: "AI generation failed" });

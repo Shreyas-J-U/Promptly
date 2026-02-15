@@ -1,35 +1,30 @@
 import { Router, Request, Response } from "express";
 import { streamClient } from "../lib/stream";
 import User from "../models/User";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const router = Router();
+const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
 
-// Get user profile
-router.get(
-  "/user/:userId",
-  async (req: Request, res: Response): Promise<void> => {
-    try {
-      const user = await User.findOne({ userId: req.params.userId });
-      if (!user) {
-        res.status(404).json({ error: "User not found" });
-        return;
-      }
-      res.json(user);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch user" });
-    }
-  },
-);
+// Register
+router.post("/register", async (req: Request, res: Response): Promise<void> => {
+  const { userId, userName, password } = req.body;
 
-router.post("/token", async (req: Request, res: Response): Promise<void> => {
-  const { userId, userName } = req.body;
-
-  if (!userId) {
-    res.status(400).json({ error: "UserId is required" });
+  if (!userId || !password) {
+    res.status(400).json({ error: "UserId and password are required" });
     return;
   }
 
   try {
+    const existingUser = await User.findOne({ userId });
+    if (existingUser) {
+      res.status(400).json({ error: "User ID already exists" });
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // 1. Sync with Stream
     await streamClient.upsertUser({
       id: userId,
@@ -38,27 +33,63 @@ router.post("/token", async (req: Request, res: Response): Promise<void> => {
     });
 
     // 2. Sync with MongoDB
-    const user = await User.findOneAndUpdate(
-      { userId },
-      {
-        name: userName || userId,
-        lastLogin: new Date(),
-        $inc: { "metadata.totalSessions": 1 },
-      },
-      { upsert: true, new: true },
-    );
+    const user = new User({
+      userId,
+      name: userName || userId,
+      password: hashedPassword,
+    });
+    await user.save();
 
-    const token = streamClient.createToken(userId);
-    res.json({ token, user });
+    const streamToken = streamClient.createToken(userId);
+    const jwtToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: "7d" });
+
+    res.status(201).json({ token: streamToken, jwt: jwtToken, user });
   } catch (error) {
-    console.error("Error creating token:", error);
-    res.status(500).json({ error: "Failed to create token" });
+    console.error("Registration error:", error);
+    res.status(500).json({ error: "Failed to register user" });
   }
 });
 
-// Update user stats
-router.patch(
-  "/user/:userId/stats",
+// Login
+router.post("/login", async (req: Request, res: Response): Promise<void> => {
+  const { userId, password } = req.body;
+
+  if (!userId || !password) {
+    res.status(400).json({ error: "UserId and password are required" });
+    return;
+  }
+
+  try {
+    const user = await User.findOne({ userId });
+    if (!user) {
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
+    }
+
+    // Update last login
+    user.lastLogin = new Date();
+    user.metadata.totalSessions += 1;
+    await user.save();
+
+    const streamToken = streamClient.createToken(userId);
+    const jwtToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: "7d" });
+
+    res.json({ token: streamToken, jwt: jwtToken, user });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Failed to login" });
+  }
+});
+
+// Get user profile
+router.get(
+  "/user/:userId",
   async (req: Request, res: Response): Promise<void> => {
     const { field, increment } = req.body;
     try {

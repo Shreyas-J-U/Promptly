@@ -91,6 +91,23 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
 router.get(
   "/user/:userId",
   async (req: Request, res: Response): Promise<void> => {
+    try {
+      const user = await User.findOne({ userId: req.params.userId });
+      if (!user) {
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch user profile" });
+    }
+  },
+);
+
+// Update user stats
+router.patch(
+  "/user/:userId/stats",
+  async (req: Request, res: Response): Promise<void> => {
     const { field, increment } = req.body;
     try {
       const update: any = {};

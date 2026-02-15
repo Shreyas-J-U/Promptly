@@ -121,5 +121,4 @@ _Building the future of agentic interfaces._
 
 ---
 
-> [!TIP]
-> Use the **Web Search** toggle in the assistant panel to enable real-time information retrieval for your prompts!
+> Use the **Web Search** toggle in the assistant panel to adjust real-time information retrieval (enabled by default for maximum discovery)!

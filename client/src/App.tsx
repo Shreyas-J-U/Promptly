@@ -16,6 +16,8 @@ function App() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [lastMetadata, setLastMetadata] = useState<IChatMetadata | null>(null);
+  const [aiStateKey, setAiStateKey] = useState(0);
+  const [selectedHistory, setSelectedHistory] = useState<any>(null);
 
   useEffect(() => {
     const restoreSession = async () => {
@@ -102,35 +104,17 @@ function App() {
     }
   }, [client]);
 
-  const handleCreateChannel = async () => {
-    if (!client) return;
-    const name = prompt("Enter channel name:");
-    if (!name) return;
+  const handleNewConversation = useCallback(() => {
+    setAiStateKey((prev) => prev + 1);
+    setLastMetadata(null);
+    setSelectedHistory(null);
+  }, []);
 
-    const channelId = name.toLowerCase().replace(/\s+/g, "-");
-    const channel = client.channel("messaging", channelId, {
-      name,
-      members: [client.userID!],
-    });
-
-    try {
-      await channel.create();
-      // Sync stats with backend
-      await fetch(`http://localhost:3000/api/user/${client.userID}/stats`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ field: "totalChannels", increment: 1 }),
-      });
-      // Optionally re-fetch profile to update stats UI
-      const res = await fetch(
-        `http://localhost:3000/api/user/${client.userID}`,
-      );
-      const updatedUser = await res.json();
-      setUserProfile(updatedUser);
-    } catch (err) {
-      console.error("Failed to create channel:", err);
-    }
-  };
+  const handleSelectHistory = useCallback((item: any) => {
+    setAiStateKey((prev) => prev + 1);
+    setSelectedHistory(item);
+    setLastMetadata(item.metadata);
+  }, []);
 
   if (!client) {
     return (
@@ -149,10 +133,18 @@ function App() {
               collapsed={false}
               userProfile={userProfile}
               onLogout={handleLogout}
-              onCreateChannel={handleCreateChannel}
+              onNewConversation={handleNewConversation}
+              onSelectHistory={handleSelectHistory}
             />
           }
-          main={<AIAssistantPanel onMetadata={setLastMetadata} />}
+          main={
+            <AIAssistantPanel
+              key={aiStateKey}
+              userId={userProfile.userId}
+              initialData={selectedHistory}
+              onMetadata={setLastMetadata}
+            />
+          }
           assistant={<ChatInterface metadata={lastMetadata} />}
         />
       </Chat>

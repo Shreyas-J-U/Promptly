@@ -1,4 +1,4 @@
-import { Hash, Plus, Sparkles, LogOut } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, LogOut, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -9,213 +9,197 @@ import {
 } from "@/components/ui/tooltip";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
-import { ChannelList, useChatContext } from "stream-chat-react";
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 
 interface SidebarProps {
   collapsed: boolean;
   userProfile?: any;
   onLogout: () => void;
-  onCreateChannel: () => void;
+  onNewConversation: () => void;
+  onSelectHistory: (data: any) => void;
 }
 
 export function Sidebar({
   collapsed,
   userProfile,
   onLogout,
-  onCreateChannel,
+  onNewConversation,
+  onSelectHistory,
 }: SidebarProps) {
-  const { client } = useChatContext();
+  const [history, setHistory] = useState<any[]>([]);
 
-  const filters = useMemo(
-    () => ({
-      type: "messaging",
-      members: { $in: [client.userID || ""] },
-    }),
-    [client.userID],
-  );
-
-  const sort = { last_message_at: -1 } as const;
+  useEffect(() => {
+    if (!userProfile?.userId) return;
+    const fetchHistory = async () => {
+      try {
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:3000"
+          }/api/history/${userProfile.userId}`,
+        );
+        const data = await res.json();
+        if (res.ok) setHistory(data);
+      } catch (error) {
+        console.error("Failed to fetch history:", error);
+      }
+    };
+    fetchHistory();
+    const interval = setInterval(fetchHistory, 10000); // Polling for updates
+    return () => clearInterval(interval);
+  }, [userProfile?.userId]);
 
   return (
-    <div className="flex h-full flex-col">
-      {/* Header */}
-      <div className="flex h-16 items-center justify-between border-b border-border/50 px-4">
-        {!collapsed ? (
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-gradient-to-br from-[hsl(var(--ai-gradient-start))] to-[hsl(var(--ai-gradient-end))]">
-              <Sparkles className="h-4 w-4 text-white" />
+    <div className="flex h-full flex-col bg-background/80 backdrop-blur-xl border-r border-border/50">
+      {/* Header & Logo */}
+      <div className="p-6">
+        <div
+          className={cn(
+            "flex items-center gap-3 mb-8",
+            collapsed && "justify-center mb-6",
+          )}
+        >
+          <div className="p-2.5 rounded-xl bg-gradient-to-br from-[hsl(var(--ai-gradient-start))] to-[hsl(var(--ai-gradient-end))] shadow-lg shadow-[hsl(var(--ai-glow)/0.2)]">
+            <Sparkles className="h-5 w-5 text-white" />
+          </div>
+          {!collapsed && (
+            <div className="flex flex-col">
+              <h1 className="text-xl font-bold gradient-text tracking-tight">
+                Promptly
+              </h1>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                AI Workspace
+              </span>
             </div>
-            <h1 className="text-xl font-bold gradient-text">Promptly</h1>
-          </div>
-        ) : (
-          <div className="p-1.5 rounded-lg bg-gradient-to-br from-[hsl(var(--ai-gradient-start))] to-[hsl(var(--ai-gradient-end))] mx-auto">
-            <Sparkles className="h-4 w-4 text-white" />
-          </div>
-        )}
-        {!collapsed && <ThemeToggle />}
-      </div>
+          )}
+        </div>
 
-      {/* Channels */}
-      <div className="flex-1 overflow-y-auto p-3">
-        {/* Create Channel Button */}
+        {/* New Conversation Button */}
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
+                onClick={onNewConversation}
                 className={cn(
-                  "w-full mb-4 rounded-xl font-semibold transition-all duration-200",
+                  "w-full rounded-xl font-bold text-sm transition-all duration-300 group",
                   "bg-gradient-to-r from-[hsl(var(--ai-gradient-start))] to-[hsl(var(--ai-gradient-end))]",
-                  "hover:shadow-lg hover:shadow-[hsl(var(--ai-glow)/0.2)] hover:scale-[1.02]",
-                  collapsed && "px-0",
+                  "hover:shadow-xl hover:shadow-[hsl(var(--ai-glow)/0.3)] hover:scale-[1.02]",
+                  collapsed ? "px-0 h-12" : "py-6",
                 )}
-                onClick={onCreateChannel}
               >
-                <Plus className="h-4 w-4" />
-                {!collapsed && (
-                  <span className="ml-2 text-white">New Channel</span>
-                )}
+                <Plus
+                  className={cn("h-5 w-5 text-white", !collapsed && "mr-2")}
+                />
+                {!collapsed && <span>New Conversation</span>}
               </Button>
             </TooltipTrigger>
             {collapsed && (
-              <TooltipContent side="right">
-                <p>New Channel</p>
+              <TooltipContent side="right" className="font-bold">
+                New Conversation
               </TooltipContent>
             )}
           </Tooltip>
         </TooltipProvider>
+      </div>
 
-        {/* Channel List */}
-        <div className="space-y-1">
+      {/* Navigation / History */}
+      <div className="flex-1 overflow-y-auto px-4 space-y-6 custom-scrollbar">
+        <div>
           {!collapsed && (
-            <h2 className="mb-3 px-3 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em]">
-              Channels
-            </h2>
+            <div className="flex items-center justify-between mb-4 px-2">
+              <h2 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+                Recent History
+              </h2>
+            </div>
           )}
 
-          <ChannelList
-            filters={filters}
-            sort={sort}
-            Preview={(props) => (
-              <TooltipProvider delayDuration={0}>
+          <div className="space-y-1">
+            {history.map((item) => (
+              <TooltipProvider key={item._id} delayDuration={0}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
-                      onClick={() => props.setActiveChannel?.(props.channel)}
+                      onClick={() => onSelectHistory(item)}
                       className={cn(
-                        "sidebar-item w-full group transition-all duration-200 flex items-center gap-3 px-3 py-2 rounded-xl mb-1",
-                        props.active ? "active shadow-sm" : "hover:bg-muted/50",
-                        collapsed && "justify-center px-2",
+                        "w-full group transition-all duration-200 flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1",
+                        "hover:bg-muted/50 border border-transparent",
+                        collapsed && "justify-center px-0",
                       )}
                     >
-                      <Hash
+                      <Clock
                         className={cn(
-                          "h-4 w-4 transition-colors",
-                          props.active
-                            ? "text-white"
-                            : "text-muted-foreground group-hover:text-foreground",
+                          "h-4 w-4 transition-colors shrink-0 text-muted-foreground group-hover:text-foreground",
                         )}
                       />
                       {!collapsed && (
-                        <>
-                          <span
-                            className={cn(
-                              "flex-1 truncate text-left font-medium",
-                              props.active ? "text-white" : "text-foreground",
-                            )}
-                          >
-                            {(props.channel.data as any)?.name || "Untitled"}
-                          </span>
-                          {props.unread && props.unread > 0 && (
-                            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white px-1.5 text-[10px] font-bold text-primary">
-                              {props.unread}
-                            </span>
+                        <span
+                          className={cn(
+                            "flex-1 truncate text-left text-sm font-medium text-muted-foreground group-hover:text-foreground",
                           )}
-                        </>
+                        >
+                          {item.prompt}
+                        </span>
                       )}
                     </button>
                   </TooltipTrigger>
                   {collapsed && (
                     <TooltipContent side="right" className="font-medium">
-                      <p>{(props.channel.data as any)?.name || "Untitled"}</p>
+                      <p>{item.prompt}</p>
                     </TooltipContent>
                   )}
                 </Tooltip>
               </TooltipProvider>
-            )}
-          />
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* User Profile */}
-      <div className="border-t border-border/50 p-3">
-        <TooltipProvider delayDuration={0}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div
-                className={cn(
-                  "flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-all cursor-pointer",
-                  collapsed && "justify-center",
-                )}
-              >
-                <div className="relative">
-                  <Avatar className="h-9 w-9 ring-2 ring-background shadow-md border-2 border-primary/10">
-                    <AvatarImage src={userProfile?.avatar} />
-                    <AvatarFallback className="bg-gradient-to-br from-[hsl(var(--ai-gradient-start))] to-[hsl(var(--ai-gradient-end))] text-white font-semibold">
-                      {userProfile?.name?.charAt(0).toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-green-500 ring-2 ring-background shadow-sm" />
-                </div>
-                {!collapsed && (
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate">
-                      {userProfile?.name || "User"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">Online</p>
-                  </div>
-                )}
-                {!collapsed && (
-                  <div className="flex items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={onLogout}
-                      className="h-8 w-8 rounded-lg hover:text-destructive hover:bg-destructive/10"
-                    >
-                      <LogOut className="h-4 w-4" />
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </TooltipTrigger>
-            {collapsed && (
-              <TooltipContent side="right">
-                <p>{userProfile?.name || "User"} - Online</p>
-              </TooltipContent>
-            )}
-          </Tooltip>
-        </TooltipProvider>
+      {/* Footer / Profile */}
+      <div className="p-4 mt-auto border-t border-border/50 bg-muted/5">
+        <div
+          className={cn(
+            "flex items-center gap-3 p-2 rounded-2xl transition-all",
+            collapsed ? "justify-center" : "bg-muted/30",
+          )}
+        >
+          <div className="relative shrink-0">
+            <Avatar className="h-9 w-9 ring-2 ring-background border border-primary/10">
+              <AvatarImage src={userProfile?.avatar} />
+              <AvatarFallback className="bg-gradient-to-br from-[hsl(var(--ai-gradient-start))] to-[hsl(var(--ai-gradient-end))] text-white text-xs font-bold">
+                {userProfile?.name?.charAt(0).toUpperCase() || "U"}
+              </AvatarFallback>
+            </Avatar>
+            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-green-500 ring-2 ring-background shadow-sm" />
+          </div>
 
-        {/* Stats on hover or expanded */}
-        {!collapsed && userProfile?.metadata && (
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <div className="bg-muted/30 p-2 rounded-lg text-center backdrop-blur-sm">
-              <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-tighter">
-                Sessions
+          {!collapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold truncate">
+                {userProfile?.name || "User"}
               </p>
-              <p className="text-xs font-bold">
-                {userProfile.metadata.totalSessions}
+              <p className="text-[10px] text-muted-foreground font-medium">
+                Pro Account
               </p>
             </div>
-            <div className="bg-muted/30 p-2 rounded-lg text-center backdrop-blur-sm">
-              <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-tighter">
-                Channels
-              </p>
-              <p className="text-xs font-bold">
-                {userProfile.metadata.totalChannels || 0}
-              </p>
-            </div>
+          )}
+
+          {!collapsed && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onLogout}
+              className="h-8 w-8 rounded-lg hover:text-destructive hover:bg-destructive/10"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+
+        {!collapsed && (
+          <div className="mt-4 flex items-center justify-between px-2">
+            <ThemeToggle />
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              v1.0.4
+            </span>
           </div>
         )}
       </div>

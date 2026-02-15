@@ -67,11 +67,15 @@ import type { IChatMetadata } from "@/types/chat";
 
 export default function AIAssistantPanel({
   onMetadata,
+  initialData,
+  userId,
 }: {
   onMetadata?: (metadata: IChatMetadata) => void;
+  initialData?: any;
+  userId?: string;
 }) {
-  const [prompt, setPrompt] = useState("");
-  const [response, setResponse] = useState("");
+  const [prompt, setPrompt] = useState(initialData?.prompt || "");
+  const [response, setResponse] = useState(initialData?.response || "");
   const [loading, setLoading] = useState(false);
   const [includeSearch, setIncludeSearch] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -87,7 +91,7 @@ export default function AIAssistantPanel({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, includeSearch }),
+          body: JSON.stringify({ prompt, includeSearch, userId }),
         },
       );
 
@@ -183,6 +187,7 @@ export default function AIAssistantPanel({
             placeholder="What would you like me to write? Be specific for better results..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
+            autoFocus
             className="min-h-[120px] resize-none rounded-xl border-border/50 bg-muted/30 input-glow transition-all duration-300 placeholder:text-muted-foreground/50"
           />
 

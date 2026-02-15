@@ -57,7 +57,7 @@ router.post("/generate", async (req: Request, res: Response): Promise<void> => {
       .map((line) => line.replace(/^[*-]\s*/, "").trim());
 
     const endTime = Date.now();
-    const processingTime = ((endTime - startTime) / 1000).toFixed(2);
+    const processingTime = Number(((endTime - startTime) / 1000).toFixed(2));
 
     const metadata = {
       sources,

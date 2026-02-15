@@ -7,7 +7,7 @@ export interface IHistory extends Document {
   metadata: {
     sources: { title: string; url: string }[];
     domains: string[];
-    processingTime: string;
+    processingTime: number;
     highlights: string[];
   };
   createdAt: Date;
@@ -21,7 +21,7 @@ const HistorySchema: Schema = new Schema(
     metadata: {
       sources: [{ title: String, url: String }],
       domains: [String],
-      processingTime: String,
+      processingTime: Number,
       highlights: [String],
     },
   },

@@ -4,7 +4,7 @@ import { Sidebar } from "./components/layout/Sidebar";
 import ChatInterface from "./components/ChatInterface";
 import AIAssistantPanel from "./components/AIAssistantPanel";
 import { LoginScreen } from "./components/LoginScreen";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { IChatMetadata } from "./types/chat";
 import { StreamChat } from "stream-chat";
 import { Chat } from "stream-chat-react";
@@ -17,32 +17,86 @@ function App() {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [lastMetadata, setLastMetadata] = useState<IChatMetadata | null>(null);
 
-  const handleLogin = useCallback(async (userId: string, userName: string) => {
-    setIsConnecting(true);
-    try {
-      const chatClient = StreamChat.getInstance(apiKey);
-      const response = await fetch("http://localhost:3000/api/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, userName }),
-      });
+  useEffect(() => {
+    const restoreSession = async () => {
+      const token = localStorage.getItem("promptly_token");
+      const userId = localStorage.getItem("promptly_userId");
 
-      const { token, user } = await response.json();
-      await chatClient.connectUser({ id: userId, name: userName }, token);
+      if (token && userId) {
+        try {
+          setIsConnecting(true);
+          const chatClient = StreamChat.getInstance(apiKey);
 
-      setClient(chatClient);
-      setUserProfile(user);
-    } catch (error) {
-      console.error("Login failed:", error);
-      alert("Login failed. Check your server.");
-    } finally {
-      setIsConnecting(false);
-    }
+          // Fetch user profile from backend
+          const res = await fetch(`http://localhost:3000/api/user/${userId}`);
+          const user = await res.json();
+
+          if (res.ok) {
+            await chatClient.connectUser(
+              { id: userId, name: user.name },
+              token,
+            );
+            setClient(chatClient);
+            setUserProfile(user);
+          }
+        } catch (error) {
+          console.error("Restoring session failed:", error);
+          localStorage.clear();
+        } finally {
+          setIsConnecting(false);
+        }
+      }
+    };
+    restoreSession();
   }, []);
+
+  const handleLogin = useCallback(
+    async (
+      userId: string,
+      userName: string,
+      password: string,
+      isRegistering: boolean,
+    ) => {
+      setIsConnecting(true);
+      try {
+        const chatClient = StreamChat.getInstance(apiKey);
+        const endpoint = isRegistering ? "/api/register" : "/api/login";
+        const response = await fetch(`http://localhost:3000${endpoint}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, userName, password }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Authentication failed");
+        }
+
+        const { token, jwt: jwtToken, user } = data;
+        await chatClient.connectUser({ id: userId, name: userName }, token);
+
+        localStorage.setItem("promptly_token", token);
+        localStorage.setItem("promptly_jwt", jwtToken);
+        localStorage.setItem("promptly_userId", userId);
+
+        setClient(chatClient);
+        setUserProfile(user);
+      } catch (error: any) {
+        console.error("Authentication failed:", error);
+        alert(error.message || "Failed to authenticate. Please try again.");
+      } finally {
+        setIsConnecting(false);
+      }
+    },
+    [],
+  );
 
   const handleLogout = useCallback(async () => {
     if (client) {
       await client.disconnectUser();
+      localStorage.removeItem("promptly_token");
+      localStorage.removeItem("promptly_jwt");
+      localStorage.removeItem("promptly_userId");
       setClient(null);
       setUserProfile(null);
     }

@@ -3,7 +3,7 @@ import { WorkspaceLayout } from "./components/layout/WorkspaceLayout";
 import { Sidebar } from "./components/layout/Sidebar";
 import ChatInterface from "./components/ChatInterface";
 import AIAssistantPanel from "./components/AIAssistantPanel";
-import { LoginScreen } from "./components/LoginScreen";
+import LandingPage from "./components/LandingPage";
 import { useState, useCallback, useEffect } from "react";
 import type { IChatMetadata } from "./types/chat";
 import { StreamChat } from "stream-chat";
@@ -118,15 +118,15 @@ function App() {
 
   if (!client) {
     return (
-      <ThemeProvider defaultTheme="light">
-        <LoginScreen onLogin={handleLogin} isConnecting={isConnecting} />
+      <ThemeProvider defaultTheme="dark">
+        <LandingPage onLogin={handleLogin} isConnecting={isConnecting} />
       </ThemeProvider>
     );
   }
 
   return (
-    <ThemeProvider defaultTheme="light">
-      <Chat client={client} theme="str-chat__theme-light">
+    <ThemeProvider defaultTheme="dark">
+      <Chat client={client} theme="str-chat__theme-dark">
         <WorkspaceLayout
           sidebar={
             <Sidebar

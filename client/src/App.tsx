@@ -5,6 +5,7 @@ import ChatInterface from "./components/ChatInterface";
 import AIAssistantPanel from "./components/AIAssistantPanel";
 import { LoginScreen } from "./components/LoginScreen";
 import { useState, useCallback } from "react";
+import type { IChatMetadata } from "./types/chat";
 import { StreamChat } from "stream-chat";
 import { Chat } from "stream-chat-react";
 
@@ -14,6 +15,7 @@ function App() {
   const [client, setClient] = useState<any>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [lastMetadata, setLastMetadata] = useState<IChatMetadata | null>(null);
 
   const handleLogin = useCallback(async (userId: string, userName: string) => {
     setIsConnecting(true);
@@ -96,8 +98,8 @@ function App() {
               onCreateChannel={handleCreateChannel}
             />
           }
-          main={<AIAssistantPanel />}
-          assistant={<ChatInterface />}
+          main={<AIAssistantPanel onMetadata={setLastMetadata} />}
+          assistant={<ChatInterface metadata={lastMetadata} />}
         />
       </Chat>
     </ThemeProvider>

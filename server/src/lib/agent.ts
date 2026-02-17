@@ -52,6 +52,8 @@ export class Agent {
       Respond conversationally and helpfully.
       Make sure you give it in a very structured and easy to understand format.
       Follow the basic details to answer the user message in the required format.
+      Keenly analyze the user message and respond accordingly.
+      Keep the converstion open ended so that the user can ask more questions.
     `;
 
     try {

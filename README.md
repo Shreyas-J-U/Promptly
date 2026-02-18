@@ -1,29 +1,29 @@
-# Promptly 🚀
+# Promptly 
 
 **Promptly** is a premium, AI-native workspace designed for high-performance content generation and research. It transforms the traditional chat experience into an agentic workflow, combining real-time web search, deep response insights, and a seamless developer-first interface.
 
 ---
 
-## ✨ Core Capabilities & Specialties
+## Core Capabilities & Specialties
 
-### 🤖 Intelligence Engine
+### Intelligence Engine
 
 - **Next-Gen Gemini Integration**: Powered by Google Gemini models for human-like creative writing, robust coding assistance, and advanced reasoning.
 - **Deep Discovery (Search)**: Integrated **Tavily AI** orchestrator for real-time web crawling, providing cited sources and validated truths.
 - **Neural Analysis Feed**: Every response is accompanied by a metadata workspace:
-  - 🔗 **Resource Trace**: Clickable citations for transparent research.
-  - 🌐 **Intelligence Mapping**: Domain breakdown of information origin nodes.
-  - ⏱️ **Latency Metrics**: High-precision generation speed tracking.
-  - 🧠 **Contextual Highlights**: Automated extraction of critical takeaways for rapid consumption.
+  - **Resource Trace**: Clickable citations for transparent research.
+  - **Intelligence Mapping**: Domain breakdown of information origin nodes.
+  - **Latency Metrics**: High-precision generation speed tracking.
+  - **Contextual Highlights**: Automated extraction of critical takeaways for rapid consumption.
 
-### 🎨 State-of-the-Art Interface
+### State-of-the-Art Interface
 
 - **Premium Glassmorphism**: A stunning, translucent UI architecture built with advanced backdrop blurs and subtle satin borders.
 - **Dynamic Fluid Motion**: Powered by **Framer Motion** for smooth, physics-based transitions and micro-animations that make the UI feel "alive".
 - **Responsive Architecture**: A custom-engineered mobile-first layout with intelligent drawer systems and adaptive sidebar logic.
 - **Modern Typography**: Featuring the **Outfit** font family for a sleek, high-end editorial aesthetic.
 
-### 🛡️ Secure Workspace
+### Secure Workspace
 
 - **Custom Persistence Node**: Proprietary history engine that stores interactions securely in a dedicated MongoDB layer.
 - **Identity Protection**: Robust JWT session management paired with salted Bcrypt password rounds.
@@ -31,7 +31,7 @@
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer        | Technologies                                                              |
 | :----------- | :------------------------------------------------------------------------ |
@@ -43,7 +43,7 @@
 
 ---
 
-## 🧬 System Architecture
+## System Architecture
 
 ```mermaid
 graph TD
@@ -66,7 +66,7 @@ graph TD
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Environment Configuration
 

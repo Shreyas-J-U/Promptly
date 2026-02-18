@@ -30,7 +30,7 @@ function App() {
           const chatClient = StreamChat.getInstance(apiKey);
 
           // Fetch user profile from backend
-          const res = await fetch(`http://localhost:3000/api/user/${userId}`);
+          const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/${userId}`);
           const user = await res.json();
 
           if (res.ok) {
@@ -63,7 +63,7 @@ function App() {
       try {
         const chatClient = StreamChat.getInstance(apiKey);
         const endpoint = isRegistering ? "/api/register" : "/api/login";
-        const response = await fetch(`http://localhost:3000${endpoint}`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId, userName, password }),

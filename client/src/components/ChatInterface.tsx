@@ -8,6 +8,7 @@ import {
   Search,
   Cpu,
   Inbox,
+  BrainCircuit
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -74,7 +75,7 @@ export default function ChatInterface({
         {/* Tab Switcher */}
         <div className="flex p-1 rounded-2xl bg-muted/50 border border-border/50">
           {[
-            { id: "logic", label: "Neural Logic", icon: Zap },
+            { id: "logic", label: "Neural Logic", icon: BrainCircuit },
             { id: "sources", label: "Web Intelligence", icon: Globe },
           ].map((tab) => (
             <button

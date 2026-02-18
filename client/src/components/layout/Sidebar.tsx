@@ -43,7 +43,7 @@ export function Sidebar({
       try {
         const res = await fetch(
           `${
-            import.meta.env.VITE_API_URL || "http://localhost:3000"
+            import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"
           }/api/history/${userProfile.userId}`,
         );
         const data = await res.json();

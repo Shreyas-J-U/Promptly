@@ -89,7 +89,7 @@ export default function AIAssistantPanel({
     setResponse("");
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/generate`,
+        `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}/api/generate`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

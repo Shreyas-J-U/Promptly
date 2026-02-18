@@ -26,7 +26,7 @@ export const AgentHandler = () => {
           console.log("Agent active, sending for processing...");
           try {
             await fetch(
-              `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/agent/message`,
+              `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}/api/agent/message`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -60,7 +60,7 @@ export const AgentHandler = () => {
         // We'll just start it.
       } else {
         await fetch(
-          `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/agent/start`,
+          `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}/api/agent/start`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

@@ -70,7 +70,7 @@ export function LoginScreen({ onLogin, isConnecting }: LoginScreenProps) {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-1.5 text-left">
               <label className="text-[11px] font-bold text-muted-foreground/80 uppercase tracking-widest px-1">
-                Workspace ID
+                Your ID
               </label>
               <input
                 type="text"
@@ -105,7 +105,7 @@ export function LoginScreen({ onLogin, isConnecting }: LoginScreenProps) {
 
             <div className="space-y-1.5 text-left">
               <label className="text-[11px] font-bold text-muted-foreground/80 uppercase tracking-widest px-1">
-                Access Token
+                Enter your password
               </label>
               <input
                 type="password"

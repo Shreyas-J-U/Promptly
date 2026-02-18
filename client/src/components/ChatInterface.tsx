@@ -3,7 +3,6 @@ import {
   Terminal,
   Globe,
   Clock,
-  Zap,
   ExternalLink,
   Search,
   Cpu,

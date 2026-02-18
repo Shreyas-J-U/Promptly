@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  useChannelActionContext,
   useChannelStateContext,
   useChatContext,
 } from "stream-chat-react";

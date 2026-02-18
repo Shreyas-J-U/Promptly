@@ -88,18 +88,15 @@ export default function LandingPage({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <span className="px-3 py-1 text-xs font-semibold tracking-wide text-blue-400 uppercase bg-blue-500/10 border border-blue-500/20 rounded-full mb-6 inline-block">
-            Powered by Gemini 2.0 & Tavily AI
-          </span>
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight">
             The Intelligence Workspace for <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-              High-Performance Thinking.
+              High Performance Thinking.
             </span>
           </h1>
           <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
             Don't just chat with AI. Command the live web. Promptly transforms
-            traditional chat into an agentic workflow with real-time discovery
+            traditional chat into an agentic workflow with real time discovery
             and deep response insights.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -175,7 +172,7 @@ export default function LandingPage({
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                     <input
                       type="text"
-                      placeholder="Workspace ID (unique ID)"
+                      placeholder="Enter your UserID"
                       required
                       value={userId}
                       onChange={(e) => setUserId(e.target.value)}
@@ -204,7 +201,7 @@ export default function LandingPage({
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                     <input
                       type="password"
-                      placeholder="Access Token"
+                      placeholder="Password"
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}

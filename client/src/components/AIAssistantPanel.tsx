@@ -141,7 +141,7 @@ export default function AIAssistantPanel({
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar pb-32">
         {/* Quick Prompts */}
         {!response && (
           <div className="space-y-4">
@@ -190,88 +190,6 @@ export default function AIAssistantPanel({
             </div>
           </div>
         )}
-
-        {/* Prompt Input Area */}
-        <div className="">
-          <div className="space-y-4 pt-2">
-            <div className="flex items-center justify-between px-1">
-              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
-                Content Strategy
-              </h3>
-              <motion.label
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-2 cursor-pointer group"
-              >
-                <div
-                  className={cn(
-                    "w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all duration-300",
-                    includeSearch
-                      ? "bg-primary border-primary shadow-lg shadow-primary/20"
-                      : "border-border group-hover:border-primary/50",
-                  )}
-                >
-                  <input
-                    type="checkbox"
-                    checked={includeSearch}
-                    onChange={(e) => setIncludeSearch(e.target.checked)}
-                    className="sr-only"
-                  />
-                  <AnimatePresence>
-                    {includeSearch && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                      >
-                        <Check className="h-3 w-3 text-white" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Search className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span className="text-[11px] font-bold text-muted-foreground group-hover:text-primary transition-colors uppercase tracking-wider">
-                    Deep Discovery
-                  </span>
-                </div>
-              </motion.label>
-            </div>
-
-            <div className="relative group">
-              <Textarea
-                placeholder="Describe what you want to create..."
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                className="min-h-[80px] resize-none rounded-3xl border-border/50 bg-muted/20 p-5 input-glow transition-all duration-300 placeholder:text-muted-foreground/40 font-medium text-sm leading-relaxed"
-              />
-            </div>
-
-            <Button
-              onClick={handleGenerate}
-              disabled={loading || !prompt}
-              className={cn(
-                "w-full py-7 rounded-2xl font-bold transition-all duration-300",
-                "btn-primary-glow text-white shadow-xl shadow-primary/20",
-                "disabled:opacity-50 disabled:shadow-none",
-              )}
-            >
-              {loading ? (
-                <div className="flex items-center gap-3">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  <span className="tracking-wide">Synthesizing Logic...</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5" />
-                  <span className="tracking-wide text-md">
-                    Begin Generation
-                  </span>
-                </div>
-              )}
-            </Button>
-          </div>
-        </div>
 
         {/* Results Area */}
         <AnimatePresence mode="wait">
@@ -355,6 +273,86 @@ export default function AIAssistantPanel({
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+
+      {/* Prompt Input Area - Fixed at bottom */}
+      <div className="p-6 border-t border-border/50 bg-background/80 backdrop-blur-xl relative z-10">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+              Content Strategy
+            </h3>
+            <motion.label
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 cursor-pointer group"
+            >
+              <div
+                className={cn(
+                  "w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all duration-300",
+                  includeSearch
+                    ? "bg-primary border-primary shadow-lg shadow-primary/20"
+                    : "border-border group-hover:border-primary/50",
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={includeSearch}
+                  onChange={(e) => setIncludeSearch(e.target.checked)}
+                  className="sr-only"
+                />
+                <AnimatePresence>
+                  {includeSearch && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                    >
+                      <Check className="h-3 w-3 text-white" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Search className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <span className="text-[11px] font-bold text-muted-foreground group-hover:text-primary transition-colors uppercase tracking-wider">
+                  Deep Discovery
+                </span>
+              </div>
+            </motion.label>
+          </div>
+
+          <div className="relative group">
+            <Textarea
+              placeholder="Describe what you want to create..."
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              className="min-h-[80px] max-h-[200px] resize-none rounded-3xl border-border/50 bg-muted/20 p-5 input-glow transition-all duration-300 placeholder:text-muted-foreground/40 font-medium text-sm leading-relaxed"
+            />
+          </div>
+
+          <Button
+            onClick={handleGenerate}
+            disabled={loading || !prompt}
+            className={cn(
+              "w-full py-7 rounded-2xl font-bold transition-all duration-300",
+              "btn-primary-glow text-white shadow-xl shadow-primary/20",
+              "disabled:opacity-50 disabled:shadow-none",
+            )}
+          >
+            {loading ? (
+              <div className="flex items-center gap-3">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span className="tracking-wide">Synthesizing Logic...</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5" />
+                <span className="tracking-wide text-md">Begin Generation</span>
+              </div>
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

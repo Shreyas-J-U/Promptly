@@ -437,7 +437,7 @@ export default function LandingPage({ onLogin, isConnecting }: LandingPageProps)
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className={`absolute inset-0 bg-gradient-to-br ${f.accent} opacity-[0.04]`}
+                    className={`absolute inset-0 bg-gradient-to-br opacity-[0.04]`}
                   />
                 )}
               </AnimatePresence>

@@ -192,7 +192,7 @@ export default function AIAssistantPanel({
         )}
 
         {/* Prompt Input Area */}
-        <div className="sticky bottom-0">
+        <div className="">
           <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between px-1">
               <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">

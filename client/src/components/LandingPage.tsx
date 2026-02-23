@@ -551,7 +551,7 @@ export default function LandingPage({ onLogin, isConnecting }: LandingPageProps)
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 group-focus-within:text-cyan-400 transition-colors" />
                       <input
                         type="text"
-                        placeholder="User ID"
+                        placeholder="User ID(Atleast 4 letters long)"
                         required
                         value={userId}
                         onChange={(e) => setUserId(e.target.value)}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useAnimationFrame } from "framer-motion";
-import { Globe, Shield, ArrowRight, X, Lock, User, Cpu, Sparkles, Loader2, Eye, ChevronRight } from "lucide-react";
+import { Globe, Shield, ArrowRight, X, Lock, User, Cpu, Sparkles, Loader2, Eye } from "lucide-react";
 
 interface LandingPageProps {
   onLogin: (userId: string, userName: string, password: string, isRegistering: boolean) => Promise<void>;
@@ -294,11 +294,6 @@ export default function LandingPage({ onLogin, isConnecting }: LandingPageProps)
           transition={{ delay: 0.2, duration: 0.6 }}
           className="flex justify-center mb-8"
         >
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/[0.08] rounded-full text-xs font-medium text-slate-400 backdrop-blur-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-mono-custom tracking-wider">SYSTEM ONLINE — LIVE WEB ACCESS ACTIVE</span>
-            <ChevronRight className="w-3 h-3 opacity-50" />
-          </div>
         </motion.div>
 
         {/* Main headline */}
@@ -477,7 +472,7 @@ export default function LandingPage({ onLogin, isConnecting }: LandingPageProps)
           className="mt-20 border-t border-white/[0.06] pt-8 overflow-hidden relative"
         >
           <div className="flex gap-12 items-center text-slate-700 font-mono-custom text-xs tracking-widest whitespace-nowrap animate-none" style={{ animation: "none" }}>
-            {["GOOGLE GEMINI POWERED", "TAVILY LIVE SEARCH", "JWT SESSIONS", "BCRYPT SECURITY", "ZERO DATA LOGGING", "AGENTIC WORKFLOWS", "REAL-TIME DISCOVERY"].map((t, i) => (
+            {["GOOGLE GEMINI POWERED", "TAVILY LIVE SEARCH", "NO EMAIL NEEDED", "ZERO DATA LOGGING", "AGENTIC WORKFLOWS", "REAL-TIME DISCOVERY"].map((t, i) => (
               <span key={i} className="flex items-center gap-3">
                 <span className="w-1 h-1 rounded-full bg-slate-700" />
                 {t}
